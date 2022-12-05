@@ -19,14 +19,23 @@ const config = {
                 test: /\.(ts|tsx)$/,
                 use: ['thread-loader', 'babel-loader']
             }, {
-                test: /.(css)$/,
+                test: /\.css$/,
                 use: [
                     isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
                     'css-loader',
                     'postcss-loader'
                 ]
             }, {
-                test: /.(png|jpg|jpeg|gif|svg)$/, // 匹配图片文件
+                test: /\.less$/,
+                use: [
+                    isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader',
+                    'less-loader'
+                ]
+            }, {
+                test: /\.(png|jpg|jpeg|gif|svg)$/, // 匹配图片文件
+                exclude: [path.resolve(__dirname, '../src/assets/icons')],
                 type: "asset", // type选择asset
                 parser: {
                     dataUrlCondition: {
@@ -36,6 +45,15 @@ const config = {
                 generator: {
                     filename: 'static/images/[name].[contenthash:8][ext]', // 文件输出目录和命名
                 },
+            }, {
+                test: /\.svg$/,
+                include: [path.resolve(__dirname, '../src/assets/icons')],
+                use: [{
+                    loader: 'svg-sprite-loader',
+                    options: {
+                        symbolId: 'icon-[name]'
+                    }
+                }]
             }, {
                 test: /.(woff2?|eot|ttf|otf)$/, // 匹配字体图标文件
                 type: "asset", // type选择asset

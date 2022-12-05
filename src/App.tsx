@@ -1,8 +1,13 @@
 import React from "react";
-
+import AppWithRouter from "./routes";
+import './App.less';
+import { useWindowSize } from "./utils/useWidowSize";
+useWindowSize();
 const App = () => {
     return (
-        <h1>Hello React</h1>
+        <div className="view">
+            <AppWithRouter />
+        </div>
     )
 }
 
