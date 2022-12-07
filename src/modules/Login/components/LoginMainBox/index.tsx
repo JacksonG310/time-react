@@ -1,13 +1,13 @@
+import { userLogin } from "@/api/user";
 import { FormItem, Input, SvgIcon } from "@/components";
 import { passwordValidator, usernameValidator } from "@/utils/rules";
 import Valicator from "@/utils/Validator";
-import { debounce } from "lodash";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import './index.less';
 const LoginMainBox: React.FC = () => {
     const [loginForm, setLoginForm] = useState({
-        username: "",
+        account: "",
         password: "",
     })
     const [errorMsg, setErrorMsg] = useState({
@@ -17,14 +17,14 @@ const LoginMainBox: React.FC = () => {
     const onUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setLoginForm({
-            username: value,
+            account: value,
             password: loginForm.password
         })
     }
     const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setLoginForm({
-            username: loginForm.username,
+            account: loginForm.account,
             password: value
         })
     }
@@ -46,6 +46,11 @@ const LoginMainBox: React.FC = () => {
         })
         return !result.hasError;
     }
+
+    const handleLogin = async () => {
+        const res = await userLogin(loginForm);
+        console.log(res);
+    }
     return (
         <div className="login-main-box">
             <div className="login-avatar">
@@ -59,7 +64,7 @@ const LoginMainBox: React.FC = () => {
                                 <input
                                     type="text"
                                     placeholder="手机号/邮箱"
-                                    value={loginForm.username}
+                                    value={loginForm.account}
                                     onChange={onUsernameChange}
                                     onBlur={(e) => validatrUsername(e.target.value)}
                                 />
@@ -67,7 +72,6 @@ const LoginMainBox: React.FC = () => {
                             <Input
                                 type="text"
                                 placeholder="手机号/邮箱"
-                                value={loginForm.username}
                                 onChange={onUsernameChange}
                                 onBlur={(e) => validatrUsername(e.target.value)}
                             />
@@ -89,7 +93,7 @@ const LoginMainBox: React.FC = () => {
                                 onChange={onPasswordChange}
                                 onBlur={(e) => validDatePassword(e.target.value)}
                             />
-                            <a href={void 0} className="login-btn">
+                            <a href={void 0} onClick={handleLogin} className="login-btn">
                                 <SvgIcon name="login" className="login-icon" color="#fff" />
                             </a>
                         </FormItem>
