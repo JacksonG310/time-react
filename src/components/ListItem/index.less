@@ -1,0 +1,54 @@
+.listItem{
+    width: 100%;
+    position: relative;
+    user-select: none;
+    .itemContent{
+        &:hover{
+            background-color: #f5f9fe;
+        }
+        box-sizing: border-box;
+        position: relative;
+        margin: 0 5px;
+        border-radius: 8px;
+        padding: 11px 9px 11px 22px;
+        background: #fff;
+        transition: background .3s;
+        min-height: 51px;
+        .itemParent{
+            display: flex;
+            align-items: center;
+            .finish{
+                &:honver{
+                    background-color: #ecf3fe;
+                }
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .circle{
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    border: 1px solid #42a2f4;
+                }
+            }
+            .content{
+                margin-left: 11px;
+                flex: 1 1;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+            .more{
+                font-size: 12px;
+                transition: all .3s;
+            }
+        }
+       
+        .content{
+            flex: 1;
+        }
+    }
+}

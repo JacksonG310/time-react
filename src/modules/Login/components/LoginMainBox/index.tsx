@@ -1,11 +1,13 @@
-import { userLogin } from "@/api/user";
+import { UserLoginBody$POST } from "@/api/types";
 import { FormItem, Input, SvgIcon } from "@/components";
-import { passwordValidator, usernameValidator } from "@/utils/rules";
+import { isPhone, passwordValidator, usernameValidator } from "@/utils/rules";
 import Valicator from "@/utils/Validator";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './index.less';
+import { userAction } from "../..";
 const LoginMainBox: React.FC = () => {
+    const navigate = useNavigate();
     const [loginForm, setLoginForm] = useState({
         account: "",
         password: "",
@@ -28,18 +30,16 @@ const LoginMainBox: React.FC = () => {
             password: value
         })
     }
-    const validatrUsername = (value: string) => {
-        const result = new Valicator(usernameValidator.validator).addRules([{ value: value, rules: usernameValidator.rules }]).validate();
-        console.log(result);
-
+    const validatrUsername = () => {
+        const result = new Valicator(usernameValidator.validator).addRules([{ value: loginForm.account, rules: usernameValidator.rules }]).validate();
         setErrorMsg({
             usernameErrrorMsg: result.error[0] || result.error[1],
             passwordErrorMsg: errorMsg.passwordErrorMsg
         })
         return !result.hasError;
     }
-    const validDatePassword = (value: string) => {
-        const result = new Valicator(passwordValidator.validator).addRules([{ value: value, rules: passwordValidator.rules }]).validate();
+    const validDatePassword = () => {
+        const result = new Valicator(passwordValidator.validator).addRules([{ value: loginForm.password, rules: passwordValidator.rules }]).validate();
         setErrorMsg({
             usernameErrrorMsg: errorMsg.usernameErrrorMsg,
             passwordErrorMsg: result.error[0],
@@ -48,8 +48,17 @@ const LoginMainBox: React.FC = () => {
     }
 
     const handleLogin = async () => {
-        const res = await userLogin(loginForm);
-        console.log(res);
+        const isValid = validatrUsername() && validDatePassword();
+        if (isValid) {
+            const body: UserLoginBody$POST = {
+                ...loginForm,
+                isMobile: isPhone(loginForm.account)
+            }
+            const res = await userAction.login(body);
+            if (res) {
+                navigate('/');
+            }
+        }
     }
     return (
         <div className="login-main-box">
@@ -73,7 +82,7 @@ const LoginMainBox: React.FC = () => {
                                 type="text"
                                 placeholder="手机号/邮箱"
                                 onChange={onUsernameChange}
-                                onBlur={(e) => validatrUsername(e.target.value)}
+                                onBlur={validatrUsername}
                             />
                         </FormItem>
                     </div>
@@ -91,7 +100,7 @@ const LoginMainBox: React.FC = () => {
                                 type="password"
                                 placeholder="密码"
                                 onChange={onPasswordChange}
-                                onBlur={(e) => validDatePassword(e.target.value)}
+                                onBlur={validDatePassword}
                             />
                             <a href={void 0} onClick={handleLogin} className="login-btn">
                                 <SvgIcon name="login" className="login-icon" color="#fff" />

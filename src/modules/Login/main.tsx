@@ -1,6 +1,5 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import LoginMainBox from "./components/LoginMainBox";
 import "./index.less";
 const Login = () => {
     return (

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { APIException, NetworkException } from "./exception";
 
 const BASE_URL = "http://127.0.0.1:5000";
 
@@ -27,15 +28,17 @@ export const request = async <T>(config: AxiosConfig): Promise<T> => {
         if ((res.data as any).code === 200) {
             return (res.data as any).data;
         } else {
-            throw new Error("request error");
+            throw new APIException(res.data);
         }
     } catch (error) {
-        throw error;
+        if (error instanceof APIException) {
+            throw error;
+        }
+        throw new NetworkException("网络出现问题，请检查网络");
     }
-
 }
 
-const withQuery = (url: string, query: any) => {
+const withQuery = (url: string, query: any = {}) => {
     const keys = Object.keys(query);
     const str = keys.map(k => `${k}=${encodeURIComponent(typeof query[k] === "object" ? JSON.stringify(query[k]) : query[k])}`).join('&');
     return `${url}${keys.length !== 0 ? "?" : ""}${str}`;
