@@ -8,12 +8,13 @@ import HomeBase from "@/modules/Hone/Main";
 import Matter from "@/modules/Matter/Main";
 import AllMatter from "@/modules/Matter/components/AllMetter";
 import Schedule from "@/modules/Matter/components/Schedule";
-import Repeat from "@/modules/Matter/components/Repeat";
 import CheckList from "@/modules/Matter/components/CheckList";
+import Test from "@/modules/Test/Test";
 const AppWithRouter = () => {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="test" element={<Test />} />
                 <Route path="/account" element={<LoginPage />} >
                     <Route path="login" element={<LoginMainBox />} />
                     <Route path="register" element={<ReigsterMain />} />
@@ -33,7 +34,6 @@ const MainRoute = () => {
                 <Route path="matter" element={<Matter />}>
                     <Route path="allMatter" element={<AllMatter />} />
                     <Route path="schedule" element={<Schedule />} />
-                    <Route path="repeat" element={<Repeat />} />
                     <Route path="checkList" element={<CheckList />} />
                 </Route>
             </Route>

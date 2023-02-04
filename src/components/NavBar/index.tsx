@@ -1,4 +1,5 @@
 import React from "react";
+import { Scroll } from "../base/Scroll";
 import { NavBody } from "./components/Body";
 import NavHeader from "./components/Header";
 import "./index.less";
@@ -10,8 +11,11 @@ const NavBar = () => {
             <div className="top">
                 <NavHeader />
             </div>
+
             <div className="bottom">
-                <NavBody />
+                <Scroll width="240px" height="100%" maxWidth="240px" maxHeight="100%" direction="y" trigger="hover">
+                    <NavBody />
+                </Scroll>
             </div>
         </div>
     )

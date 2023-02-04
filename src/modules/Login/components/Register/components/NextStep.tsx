@@ -8,7 +8,6 @@ interface NextStepProps {
 
 const NextStep: React.FC<NextStepProps> = (props) => {
     const { phone } = props;
-    console.log(phone);
 
     return (
         <div className="nextStep">

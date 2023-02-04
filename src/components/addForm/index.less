@@ -1,0 +1,107 @@
+.ant-modal-content{
+    padding: 20px !important;
+}
+
+
+.formHeader{
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+    display: flex;
+    align-items: center;
+    padding-bottom: 20px;
+    .ant-input{
+        font-size: 20px;
+        &::placeholder{
+            font-size: 20px;
+            color: rgba(60,60,67,.2);
+            line-height: 26px;
+        }   
+    }
+}
+
+.formCommon{
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+    .formCommonWrap{
+        display: flex;
+        flex-direction: column;
+        padding: 14px 0;
+        .time-row{
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            .clock-icon{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .addTime{
+                display: inline-block;
+                white-space: normal;
+                padding: 8px;
+                border-radius: 6px;
+                transition: all .3s;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #ff9600;
+                &:hover{
+                    background: #f5f9ff;
+                }
+            }
+        }
+    }
+}
+
+.formMore{
+    .subtask-row{
+        border-bottom: 1px solid rgba(0, 0, 0, .05);
+        padding-bottom: 14px;
+        .addSubtask{
+            display: flex;
+            align-items: center;
+            display: inline-block;
+            .addSubtask-btn{
+                display: flex;
+                align-items: center;
+                font-size: 14px;
+                color: #4a8cf1;
+                border-radius: 6px;
+                line-height: 36px;
+                padding: 0 8px;
+                .task-icon{
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                &:hover{
+                    background: #f5f9ff;
+                }
+            }
+        }
+    }
+    .mark-row{
+        border-bottom: 1px solid rgba(0, 0, 0, .05);
+        padding-bottom: 14px;
+    }
+    .fail-row{
+        .fail-btn{
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            width: 36px;
+            .fail-icon{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 36px;
+                height: 36px;
+            }
+            span{
+                text-align: center;
+            }
+        }
+    }
+    
+}

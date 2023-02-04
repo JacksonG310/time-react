@@ -3,8 +3,8 @@ export class APIException {
     errmsg: string;
     errcode: number;
     constructor(info: any) {
-        this.errmsg = info.errMsg;
-        this.errcode = info.errcode;
+        this.errmsg = info.message;
+        this.errcode = info.code;
     }
 }
 

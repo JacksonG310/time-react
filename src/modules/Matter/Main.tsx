@@ -1,9 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.less";
 import { Outlet, useLocation } from "react-router-dom";
 import MatterHeader from "@/components/Header";
-import { TITLE_MAP } from "@/constants/titlleMap";
 import { Switch } from "antd";
+import AddBtn from "@/components/addBtn";
+import AddForm from "@/components/addForm";
+import { useTitle } from "@/hooks/Matter/useTitle";
+import { RootState } from "@/types";
+import { connect } from "react-redux";
+import { matterActions } from ".";
 
 const HideCom = (
     <div className="hide">
@@ -12,38 +17,37 @@ const HideCom = (
     </div>
 )
 
+interface StateProps {
+    addFormVisible: boolean
+}
 
-const Issue = () => {
+interface Props extends StateProps { };
 
-
-    const location = useLocation();
-
-    const computedTitle = () => {
-        const path = location.pathname;
-        const keys = path.split("/");
-        const title = keys.reduce((title, key, index) => {
-            const val = TITLE_MAP[key as keyof typeof TITLE_MAP];
-            if (!val) return title;
-            if (index != keys.length - 1) {
-                return title + val + '-';
-            } else {
-                return title + val;
-            }
-        }, "");
-        return title;
-    }
-
+const IssueBase: React.FC<Props> = (props) => {
+    const [matterTitle] = useTitle();
+    const { addFormVisible } = props;
+    const handleClick = () => matterActions.changleAddFormVisible(!addFormVisible);
     return (
         <div className="matter-view">
             <div className="matter-header">
-                <MatterHeader left={computedTitle()} right={HideCom} />
+                <MatterHeader left={matterTitle} right={HideCom} />
             </div>
             <div className="matter-body">
                 <Outlet />
             </div>
+            <AddForm visiable={addFormVisible} />
+            <AddBtn onClick={handleClick} />
         </div>
     )
 }
+
+function mapStateToProps(state: RootState) {
+    return {
+        addFormVisible: state.root.matterModule.addFormVisible
+    }
+}
+
+const Issue = connect(mapStateToProps)(IssueBase);
 
 export default Issue;
 

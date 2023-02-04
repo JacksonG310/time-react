@@ -4,4 +4,5 @@ export { Button } from './base/Button';
 export { Input } from './base/Input';
 export { VirtualList } from './base/VirtualList'
 export { Provider } from "./Provider";
-export { ScrollX } from "./base/ScrollX";
+export { Scroll } from "./base/Scroll";
+export { Selector } from "./base/Selector";
