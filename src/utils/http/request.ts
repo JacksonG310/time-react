@@ -23,7 +23,7 @@ export const request = async <T>(config: AxiosConfig): Promise<T> => {
             url: withQuery(url, query),
             baseURL: baseURL ? baseURL : BASE_URL,
             data: body,
-            headers
+            headers,
         })
         if ((res.data as any).code === 200) {
             return (res.data as any).data;

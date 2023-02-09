@@ -28,8 +28,6 @@ const NavBody = () => {
             getMenuItem("全部", "allMatter"),
             getMenuItem("日程", "schedule"),
             getMenuItem("清单", "checkList"),
-            getMenuItem("重复", "repeat"),
-
         ]),
         // 备忘录
         getMenuItem("备忘录", "memo", null, [

@@ -11,7 +11,7 @@ const FormCommon = () => {
                         <SvgIcon name="clock" width="16px" height="16px" />
                     </div>
                     <div className="addTime">
-                        添加事件
+                        添加时间
                     </div>
                 </div>
             </div>

@@ -1,0 +1,85 @@
+.icon-select{
+    padding: 0 16px;
+    .preview-area{
+        padding: 0 5px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .preview-icon{
+            flex-grow: 0;
+            flex-shrink: 0;
+            height: 41px;
+            width: 41px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            img{
+                box-sizing: content-box;
+                width: 23px;
+                height: 23px;
+                padding: 5px;
+                overflow: hidden;
+                border-radius: 50%;
+            }
+        }
+    }
+    .icon-pages{
+        display: flex;
+        flex-wrap: wrap;
+        .icon-item{
+            flex-grow: 0;
+            flex-shrink: 0;
+            padding: 8px 5px;
+            .icon-item-wrap{
+                border: 2px solid red;
+                border-radius: 50%;
+                overflow: hidden;
+                width: 41px;
+                height: 41px;
+                img{
+                    box-sizing: content-box;
+                    width: 23px;
+                    height: 23px;
+                    padding: 5px;
+                    background-color: rgba(192,201,218.6);
+                    cursor: pointer;
+                    border: 2px solid #fff;
+                    border-radius: 50%;
+                }
+            }
+        }
+        .color-item{
+            flex-grow: 0;
+            flex-shrink: 0;
+            padding: 8px 3px;
+            .color-item-wrap{
+                border: 2px solid #fff;
+                border-radius: 50%;
+                overflow: hidden;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+               span{
+                   width: 28px;
+                   height: 28px;
+                   display: inline-block;
+                    border: 2px solid #fff;
+                    border-radius: 50%;
+                    cursor: pointer;
+
+               }
+            }
+        }
+    }
+}
+.button-group{
+    padding: 16px;
+    text-align: right;
+    .cabcel-btn{
+        margin-right: 10px;
+    }
+}

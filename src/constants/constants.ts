@@ -59,3 +59,53 @@ export const BAR_MAP: BarMap = {
         direction: 'left',
     },
 };
+
+export const LISTCARD_MORE = [
+    {
+        icon: 'edit',
+        title: '修改分类标题',
+        method: 'handleEdit'
+    }, {
+        icon: 'delete',
+        title: '删除分类',
+        method: 'handleDelete'
+    }
+]
+
+export interface ImportanceItem {
+    icon: string;
+    title: string;
+    color: string;
+    id: number;
+    bg: string
+}
+export const IMPORTANCE: Array<ImportanceItem> = [
+    {
+        icon: 'one',
+        title: '重要且紧急',
+        color: '#f37377',
+        bg: '#f4dce5',
+        id: 1
+    },
+    {
+        icon: 'two',
+        title: '重要不紧急',
+        color: '#ffbc66',
+        bg: '#ffedd8',
+        id: 2
+    },
+    {
+        icon: 'three',
+        title: '不重要紧急',
+        color: '#28c28c',
+        bg: '#def3e7',
+        id: 3
+    },
+    {
+        icon: 'four',
+        title: '不重要不紧急',
+        color: '#5bb3ff',
+        bg: '#d1e8ff',
+        id: 4
+    }
+]

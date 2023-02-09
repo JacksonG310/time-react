@@ -33,7 +33,7 @@ class UserModule extends Module<UserInfoState, RootState>{
                 email,
                 phone,
                 id,
-                token: token.tokenValue
+                token: token
             })
             this.setLocalUserInfo(res);
             mainActions.initAppInfo();
@@ -50,7 +50,7 @@ class UserModule extends Module<UserInfoState, RootState>{
             userId: id,
             email,
             phone,
-            token: token.tokenValue
+            token,
         }
         storageUtil.setAppInfoToStorage(userInfo);
     }

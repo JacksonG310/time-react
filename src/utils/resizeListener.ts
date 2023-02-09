@@ -1,4 +1,4 @@
-export interface ElementObj extends HTMLElement {
+export interface ElementObj extends Node {
     [key: string]: any;
     resizeListenrs: Function[];
     observer: MutationObserver;
@@ -24,8 +24,7 @@ export const addResizeListener = (element: ElementObj, fn: any) => {
                 subtree: true,
                 characterData: true
             };
-
-            element.observer.observe(element as Node, config);
+            element.observer.observe(element, config);
         }
     }
     element.resizeListenrs.push(fn);

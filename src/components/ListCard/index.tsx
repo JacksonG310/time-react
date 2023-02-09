@@ -1,40 +1,28 @@
-import React from "react";
-import { VirtualList } from "../base/VirtualList";
+import React, { MutableRefObject, ReactNode, RefObject } from "react";
 import "./index.less";
 
 interface ListCardProps {
-    item: {
-        title: string;
-        color: string;
-        id: string;
-    }
+    header: ReactNode;
+    content: ReactNode;
+    footer?: ReactNode;
+    ref?: any;
 }
 
-const ListCard = () => {
-    const useData = () => {
-        const arr = [];
-        for (let i = 1; i <= 100; i++) {
-            arr.push({
-                finish: i % 2 == 0,
-                content: i + '',
-                more: i % 2 == 1
-            });
-        }
-        return arr;
-    }
+const ListCard: React.FC<ListCardProps> = React.forwardRef((props, ref: any) => {
+    const { header, content, footer } = props;
+
     return (
-        <div className="listCard">
+        <div className="listCard" ref={ref}>
             <div className="listCardWrap">
                 <div className="listCardTitle">
-                    <span className="tagName">全部</span>
-                    <span className="more-icon">更多</span>
+                    {header}
                 </div>
                 <div className="listCardContent">
-                    <VirtualList data={useData()} itemHegiht={51} />
+                    {content}
                 </div>
             </div>
         </div>
     )
-}
+})
 
 export default ListCard;

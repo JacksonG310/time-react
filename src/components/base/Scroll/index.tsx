@@ -102,16 +102,17 @@ const Scroll: React.FC<ScrollProps> = (props) => {
     const setScrollLeft = (value: number) => {
         wrapRef.current!.scrollLeft = value;
     }
+
     useEffect(() => {
         computedBarSize();
-        // if (!props.noresize) {
-        //     addResizeListener(wrapRef.current! as any, computedBarSize); // 监听元素变化，如果容器DOM变化触发更新
-        // }
-        // return () => {
-        //     if (!props.noresize) {
-        //         removeResizeListener(wrapRef.current as any, computedBarSize);
-        //     }
-        // }
+        if (!props.noresize) {
+            addResizeListener(wrapRef.current! as any, computedBarSize); // 监听元素变化，如果容器DOM变化触发更新
+        }
+        return () => {
+            if (!props.noresize) {
+                removeResizeListener(wrapRef.current as any, computedBarSize);
+            }
+        }
     }, [])
     return (
         <div className={scrollClass} style={scrollStyle}>
