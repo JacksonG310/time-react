@@ -12,7 +12,7 @@ interface Result {
 interface Strategy {
     [K: string]: RegExp | ((value: any) => boolean)
 }
-class Valicator<S extends Strategy> {
+class Validator<S extends Strategy> {
     private readonly validators: S;
     private readonly rulesList: Array<Rules<any, S>>;
     constructor(validators: S) {
@@ -68,4 +68,4 @@ class Valicator<S extends Strategy> {
 
 }
 
-export default Valicator;
+export default Validator;

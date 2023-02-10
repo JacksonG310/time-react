@@ -2,13 +2,15 @@ import { TagItem } from "@/api/types";
 import { Selector } from "@/components";
 import { SvgIcon } from "@/components/base/SvgIcon";
 import { IMPORTANCE, ImportanceItem } from "@/constants/constants";
+import { matterActions, TaskForm } from "@/modules/Matter";
 import { RootState } from "@/types";
 import { Input, Popover } from "antd";
-import React, { useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { connect } from "react-redux";
 
 interface StateProps {
-    tags: TagItem[]
+    tags: TagItem[],
+    taskForm: TaskForm
 }
 
 interface Props extends StateProps {
@@ -18,21 +20,19 @@ interface Props extends StateProps {
 
 const FormHeaderBase: React.FC<Props> = (props) => {
 
-    const { tags } = props;
+    const { tags, taskForm } = props;
 
     const [currentTag, setCurrentTag] = useState({
-        importance: IMPORTANCE[0],
         tag: tags[0]
     })
 
-    const handleImportanceClick = (item: ImportanceItem) => setCurrentTag({
-        ...currentTag,
-        importance: item
-    })
-    const handleTagClick = (item: TagItem) => setCurrentTag({
-        ...currentTag,
-        tag: item
-    })
+    const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => matterActions.setTaskForm('title', e.target.value);
+    const handleImportanceClick = (item: ImportanceItem) => matterActions.setTaskForm('importance', item);
+    const handleTagClick = (item: TagItem) => {
+        setCurrentTag({ tag: item })
+        matterActions.setTaskForm('classify', item);
+    }
+
     const renderImportance = () => (
         <ul className="importance">
             {
@@ -49,7 +49,7 @@ const FormHeaderBase: React.FC<Props> = (props) => {
                         <span className="title">
                             {item.title}
                         </span>
-                        <div className="current" style={{ display: currentTag.importance.id === item.id ? 'block' : 'none' }}>
+                        <div className="current" style={{ display: taskForm.importance.id === item.id ? 'block' : 'none' }}>
                             <SvgIcon name="checked" width="14px" height="14px" />
                         </div>
                     </li>
@@ -82,7 +82,12 @@ const FormHeaderBase: React.FC<Props> = (props) => {
     return (
         <div className="formHeader">
             <div className="titleWrap">
-                <Input placeholder="把事情记录下来" bordered={false} />
+                <Input
+                    placeholder="把事情记录下来"
+                    value={taskForm.title}
+                    bordered={false}
+                    onChange={handleTitleChange}
+                />
             </div>
             <Selector
                 className="importanceSelector"
@@ -90,9 +95,9 @@ const FormHeaderBase: React.FC<Props> = (props) => {
                 placement='bottomLeft'
                 content={importance}
                 circle
-                icon={currentTag.importance.icon}
+                icon={taskForm.importance.icon}
                 iconWrapStyle={{
-                    backgroundColor: currentTag.importance.bg
+                    backgroundColor: taskForm.importance.bg
                 }}
             />
             <Selector
@@ -102,9 +107,9 @@ const FormHeaderBase: React.FC<Props> = (props) => {
                 content={classify}
                 circle
                 iconType="png"
-                icon={currentTag.tag.iconUrl}
+                icon={currentTag.tag!.iconUrl}
                 iconWrapStyle={{
-                    backgroundColor: currentTag.tag.color
+                    backgroundColor: currentTag.tag!.color
                 }}
             />
         </div>
@@ -113,7 +118,8 @@ const FormHeaderBase: React.FC<Props> = (props) => {
 
 function mapStateToProps(state: RootState): StateProps {
     return {
-        tags: state.root.matterModule.tags
+        tags: state.root.matterModule.tags,
+        taskForm: state.root.matterModule.taskForm
     }
 }
 

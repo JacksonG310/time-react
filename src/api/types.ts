@@ -49,6 +49,7 @@ export interface TagItem {
     name: string;
     color: string;
     iconUrl: string;
+    task: TaskItem[];
 }
 
 export interface AddTagBody$POST {
@@ -62,4 +63,34 @@ export interface AddTagBody$POST {
 export interface UpdateTagTitle$PUT {
     tagId: number;
     title: string;
+}
+
+/** -------------------------------------------------------------------------------- **/
+export interface AddTaskBody$POST {
+    classifyId: number;
+    status: number;
+    importance: number;
+    created: Date;
+    updated: Date;
+    remark: string;
+    creator: number;
+    from: Date;
+    to: Date;
+}
+
+export type FindTaskResponse$GET = Array<TaskItem>;
+
+export interface TaskItem {
+    id: number;
+    classifyId: number;
+    status: number;
+    importance: number;
+    created: Date;
+    updated: Date;
+    remark: string;
+    creator: number;
+    endTime: Date;
+    startTime: Date;
+    finishTime: Date | null;
+    finishStatus: number | null;
 }

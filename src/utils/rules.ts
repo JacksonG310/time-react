@@ -27,3 +27,19 @@ export const phoneValidator = {
         { strategy: "isPhone" as const, errorMsg: "手机号格式有误" },
     ]
 }
+
+export const titleValidator = {
+    validator: { required },
+    rules: [
+        { strategy: "required" as const, errorMsg: "请输入标题" },
+
+    ]
+}
+
+export const timeValidator = {
+    validator: { required },
+    rules: [
+        { strategy: "required" as const, errorMsg: "请设置任务时间" },
+
+    ]
+}

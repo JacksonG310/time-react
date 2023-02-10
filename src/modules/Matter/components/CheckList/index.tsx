@@ -64,6 +64,7 @@ const CheckListBase: React.FC<Props> = (props) => {
 
     useEffect(() => {
         matterActions.getAllTags();
+        matterActions.getAllTasks();
     }, []);
     return (
         <div className="checklist">

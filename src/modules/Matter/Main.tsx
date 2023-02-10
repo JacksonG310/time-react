@@ -27,6 +27,10 @@ const IssueBase: React.FC<Props> = (props) => {
     const [matterTitle] = useTitle();
     const { addFormVisible } = props;
     const handleClick = () => matterActions.changleAddFormVisible(!addFormVisible);
+
+    useEffect(() => {
+        matterActions.findTask();
+    }, [])
     return (
         <div className="matter-view">
             <div className="matter-header">
