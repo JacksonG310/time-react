@@ -1,5 +1,5 @@
 import { request } from "@/utils/http/request"
-import { AddTaskBody$POST, FindTaskResponse$GET } from "./types"
+import { AddTaskBody$POST, FindTaskResponse$GET, TaskItem, UpdateStatusBody$POST } from "./types"
 
 export const findTasks = (id: number, token: string): Promise<FindTaskResponse$GET> => {
     return request({
@@ -18,5 +18,23 @@ export const addTask = (body: AddTaskBody$POST) => {
         method: 'post',
         url: '/addTask',
         body
+    })
+}
+
+export const updateStatus = (body: UpdateStatusBody$POST) => {
+    return request({
+        method: 'put',
+        url: '/updateStatus',
+        body
+    })
+}
+
+export const findTaskById = (userId: number, taskId: number): Promise<TaskItem> => {
+    return request({
+        method: 'get',
+        url: '/findTaskById',
+        query: {
+            userId, taskId
+        }
     })
 }

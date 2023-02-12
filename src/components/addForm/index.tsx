@@ -4,9 +4,8 @@ import { RootState } from "@/types";
 import { timeValidator, titleValidator } from "@/utils/rules";
 import { AppLocalInfo } from "@/utils/storage";
 import Validator from "@/utils/Validator";
-import Valicator from "@/utils/Validator";
 import { Button, message, Modal } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Scroll } from "..";
 import { FormCommon } from "./components/Common";
@@ -18,18 +17,16 @@ import "./index.less";
 interface StateProps {
     taskForm: TaskForm,
     userInfo: AppLocalInfo,
-    tags: TagItem[]
 }
 interface Props extends StateProps {
-    visiable: boolean;
+    addFromVisiable: {
+        visitable: boolean;
+        isEdit: boolean;
+    };
 }
 
-
-
 const AddFormBase: React.FC<Props> = (props) => {
-    const handleCancel = () => {
-        matterActions.changleAddFormVisible(false);
-    }
+    const { taskForm, userInfo, addFromVisiable } = props;
 
     const validateTitle = (title: string) => {
         const res = new Validator(titleValidator.validator).addRules([{ value: title, rules: titleValidator.rules }]).validate();
@@ -44,31 +41,43 @@ const AddFormBase: React.FC<Props> = (props) => {
     }
 
     const handleBulid = async () => {
-        const { classify, importance, remark, timeInfo, title } = props.taskForm;
-        const res = validateTitle(title.trim()) && validateTime(timeInfo.from) && validateTime(timeInfo.to);
+        const { classifyId, importance, remark, title, startTime, endTime } = taskForm;
+        const res = validateTitle(title.trim()) && validateTime(startTime) && validateTime(endTime);
         if (!res) return;
+
         const body = {
-            classifyId: classify == null ? props.tags[1].id : classify.id,
+            classifyId,
             status: 0,
-            importance: importance.id,
+            importance,
             created: new Date(),
             updated: new Date(),
             remark,
-            creator: props.userInfo.userId,
-            from: timeInfo.from!,
-            to: timeInfo.to!
+            creator: userInfo.userId,
+            from: startTime!,
+            to: endTime!,
+            title
         }
-
         await matterActions.addTask(body);
     }
+    const handleSave = () => {
+
+    }
+    const handleCancel = () => {
+        matterActions.changleAddFormVisible(false);
+    }
     const FormFooter = [
-        <Button key='fail'>删除</Button>,
-        <Button key='cancel'>取消</Button>,
-        <Button key='submit' type="primary" onClick={handleBulid}>创建</Button>,
+        addFromVisiable.isEdit ? (<Button key='delete'>删除</Button>) : <div key="delete"></div>,
+        <Button key='cancel' onClick={handleCancel}>取消</Button>,
+        <Button
+            key='submit'
+            type="primary"
+            onClick={addFromVisiable.isEdit ? handleSave : handleBulid}>
+            {addFromVisiable.isEdit ? "保存" : "创建"}
+        </Button>,
     ]
     return (
         <Modal
-            open={props.visiable}
+            open={addFromVisiable.visitable}
             onCancel={handleCancel}
             closable={false}
             style={{ "minWidth": "322px" }}
@@ -77,9 +86,9 @@ const AddFormBase: React.FC<Props> = (props) => {
         >
             <Scroll maxHeight="400px" maxWidth="100%" width="100%" height="100%" trigger="none">
                 <div className="addForm">
-                    <FormHeader />
+                    <FormHeader isEdit={addFromVisiable.isEdit} />
                     <FormCommon />
-                    <FormMore />
+                    <FormMore isEdit={addFromVisiable.isEdit} />
                 </div>
             </Scroll>
         </Modal>
@@ -87,11 +96,9 @@ const AddFormBase: React.FC<Props> = (props) => {
 }
 
 function mapStateToProps(state: RootState) {
-
     return {
         taskForm: state.root.matterModule.taskForm,
         userInfo: state.root.mainModule.userInfo!,
-        tags: state.root.matterModule.tags
     }
 }
 

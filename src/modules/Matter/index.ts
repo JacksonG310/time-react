@@ -1,62 +1,99 @@
-import { addTask, findTasks } from "@/api/task";
+import { addTask, findTaskById, findTasks, updateStatus } from "@/api/task";
 import { addTag, findTags, updateTagTitle } from "@/api/todoClassify";
-import { AddTagBody$POST, AddTaskBody$POST, TagItem, UpdateTagTitle$PUT } from "@/api/types";
+import { AddTagBody$POST, AddTaskBody$POST, TagItem, TaskItem, UpdateStatusBody$POST, UpdateTagTitle$PUT } from "@/api/types";
 import { IMPORTANCE, ImportanceItem } from "@/constants/constants";
 import { RootState } from "@/types";
+import { nestTask } from "@/utils/nestTask";
 import { Module, register } from "redux-assist";
 import Issue from "./Main";
 
 export interface MatterState {
-    addFormVisible: boolean;
+    addFormVisible: {
+        visitable: boolean;
+        isEdit: boolean;
+    };
     tags: Array<TagItem>;
-    taskForm: TaskForm
+    tasks: Array<TaskItem>;
+    taskForm: TaskForm;
 }
+
+
 export interface TaskForm {
-    classify: TagItem | null;
-    importance: ImportanceItem;
+    id: number;
+    classifyId: number;
+    status: number;
+    importance: number;
+    created: Date | null;
+    updated: Date | null;
     remark: string;
     creator: number;
+    endTime: Date | null;
+    startTime: Date | null;
+    finishTime: Date | null;
+    finishStatus: number | null;
     title: string;
-    timeInfo: {
-        from: Date | null;
-        to: Date | null;
-    }
 }
 const initState: MatterState = {
-    addFormVisible: false,
+    addFormVisible: {
+        visitable: false,
+        isEdit: false
+    },
     tags: [],
+    tasks: [],
     taskForm: {
-        classify: null,
-        importance: IMPORTANCE[0],
+        id: -1,
+        classifyId: -1,
+        status: -1,
+        importance: -1,
+        created: null,
+        updated: null,
         remark: '',
         creator: -1,
-        title: '',
-        timeInfo: {
-            from: null,
-            to: null
-        }
-    }
+        endTime: null,
+        startTime: null,
+        finishTime: null,
+        finishStatus: -1,
+        title: ''
+    },
 }
 
 class MatterModule extends Module<MatterState, RootState>{
-    changleAddFormVisible(value: boolean) {
+    changleAddFormVisible(visitable: boolean, isEdit?: boolean) {
+        if (!isEdit) this.resetTaskForm();
         this.setState({
-            addFormVisible: value
+            addFormVisible: {
+                visitable,
+                isEdit: isEdit ? true : false
+            }
         })
     }
     async getAllTags() {
         const { userId, token } = this.rootState.root.mainModule.userInfo!;
         const res = await findTags(userId, token);
+        return res;
+    }
+    async getAllTasks() {
+        const { userId, token } = this.rootState.root.mainModule.userInfo!;
+        const res = await findTasks(userId, token);
+        return res;
+
+    }
+    async getAllTagsAndTasks() {
+        const tagsArr = await this.getAllTags();
+        const tasksArr = await this.getAllTasks();
+        nestTask(tagsArr.tags, tasksArr);
         this.setState({
             tags: [
-                ...res.tags
+                ...tagsArr.tags
+            ],
+            tasks: [
+                ...tasksArr
             ]
         });
     }
     async addTag(body: AddTagBody$POST) {
         const { token } = this.rootState.root.mainModule.userInfo!;
         await addTag(body, token);
-        this.getAllTags();
     }
     async updateTagTitle(body: UpdateTagTitle$PUT) {
         const { token } = this.rootState.root.mainModule.userInfo!;
@@ -65,12 +102,33 @@ class MatterModule extends Module<MatterState, RootState>{
     async addTask(body: AddTaskBody$POST) {
         const { token } = this.rootState.root.mainModule.userInfo!;
         await addTask(body);
-        this.resetState(['tags']);
+        this.getAllTagsAndTasks();
+        this.changleAddFormVisible(false);
+        this.resetTaskForm();
     }
-    async getAllTasks() {
-        const { userId, token } = this.rootState.root.mainModule.userInfo!;
-        const res = await findTasks(userId, token);
-
+    async updateTaskStatus(body: Omit<UpdateStatusBody$POST, "userId">) {
+        const { userId } = this.rootState.root.mainModule.userInfo!;
+        const data = {
+            ...body,
+            userId,
+        }
+        await updateStatus(data);
+        this.getAllTagsAndTasks();
+    }
+    async getTaskById() {
+        const { visitable, isEdit } = this.state.addFormVisible;
+        if (!visitable && !isEdit) return;
+        const { userId } = this.rootState.root.mainModule.userInfo!;
+        const { id: taskId } = this.state.taskForm;
+        const res = await findTaskById(userId, taskId);
+        this.setState({
+            taskForm: { ...res }
+        })
+    }
+    resetTaskForm() {
+        this.setState({
+            taskForm: { ...initState.taskForm }
+        });
     }
     setTaskForm(key: (keyof TaskForm), value: any) {
         const taskForm = {

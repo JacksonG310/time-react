@@ -1,23 +1,16 @@
+import { TaskItem } from "@/api/types";
 import ListItem from "@/components/ListItem";
 import { debounce } from "lodash";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./index.less";
 interface VirtualListProps {
-    data: Array<{
-        content: string;
-        finish: boolean;
-        more: boolean;
-    }>;
+    data: Array<TaskItem>;
     itemHegiht: number;
 }
 
 const VirtualList = (props: VirtualListProps) => {
     const listRef = useRef<HTMLDivElement>(null);
-    const [dispalyData, setDisplayData] = useState<Array<{
-        content: string;
-        finish: boolean;
-        more: boolean;
-    }>>([]);
+    const [dispalyData, setDisplayData] = useState<Array<TaskItem>>([]);
     const [itemNum, setItemNum] = useState(0);
     const [paddingStyle, setPaddingStyle] = useState({
         paddingTop: '0px',
@@ -65,7 +58,7 @@ const VirtualList = (props: VirtualListProps) => {
     useEffect(() => {
         const { startIndex, endIndex } = pointInfo;
         computedDisplayData(startIndex, endIndex);
-    }, [pointInfo]);
+    }, [pointInfo, props.data]);
 
     return (
         <div className="virtualList" ref={listRef} onScroll={onListScroll}>

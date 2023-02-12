@@ -1,6 +1,5 @@
 import { SvgIcon } from "@/components";
 import { TimerPicker } from "@/components/TImerPicker";
-import { useTimeText } from "@/hooks/Matter/useTimeText";
 import { matterActions, TaskForm } from "@/modules/Matter";
 import { RootState } from "@/types";
 import { computedTimeText } from "@/utils/timeText";
@@ -24,7 +23,8 @@ const FormCommonBase: React.FC<Props> = (props) => {
             time.from = timeInfo;
             time.to = timeInfo;
         }
-        matterActions.setTaskForm('timeInfo', time);
+        matterActions.setTaskForm('startTime', time.from);
+        matterActions.setTaskForm('endTime', time.to);
         setIsPickerOpen(false);
     }
     return (
@@ -43,8 +43,8 @@ const FormCommonBase: React.FC<Props> = (props) => {
                             onOpenChange={(open) => setIsPickerOpen(open)}
                         >
                             {
-                                props.taskForm.timeInfo.from == null && props.taskForm.timeInfo.to == null ? ('设置时间') :
-                                    computedTimeText(props.taskForm.timeInfo)
+                                props.taskForm.startTime == null && props.taskForm.endTime == null ? ('设置时间') :
+                                    computedTimeText(props.taskForm.startTime, props.taskForm.endTime)
                             }
                         </Popover>
                     </div>

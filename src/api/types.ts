@@ -93,4 +93,14 @@ export interface TaskItem {
     startTime: Date;
     finishTime: Date | null;
     finishStatus: number | null;
+    title: string;
+}
+
+export interface UpdateStatusBody$POST {
+    finishTime: Date | null;
+    finishStatus: number | null;
+    updated: Date;
+    status: number;
+    userId: number;
+    taskId: number;
 }

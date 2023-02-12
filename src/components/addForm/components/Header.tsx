@@ -4,8 +4,8 @@ import { SvgIcon } from "@/components/base/SvgIcon";
 import { IMPORTANCE, ImportanceItem } from "@/constants/constants";
 import { matterActions, TaskForm } from "@/modules/Matter";
 import { RootState } from "@/types";
-import { Input, Popover } from "antd";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { Input } from "antd";
+import React, { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 import { connect } from "react-redux";
 
 interface StateProps {
@@ -14,24 +14,42 @@ interface StateProps {
 }
 
 interface Props extends StateProps {
-    // importance:Array<ImportanceIcon>
+    isEdit: boolean;
 }
 
 
 const FormHeaderBase: React.FC<Props> = (props) => {
 
     const { tags, taskForm } = props;
-
     const [currentTag, setCurrentTag] = useState({
+        importance: IMPORTANCE[0],
         tag: tags[0]
     })
-
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => matterActions.setTaskForm('title', e.target.value);
-    const handleImportanceClick = (item: ImportanceItem) => matterActions.setTaskForm('importance', item);
-    const handleTagClick = (item: TagItem) => {
-        setCurrentTag({ tag: item })
-        matterActions.setTaskForm('classify', item);
+    const handleImportanceClick = (item: ImportanceItem) => matterActions.setTaskForm('importance', item.id);
+    const handleTagClick = (item: TagItem) => matterActions.setTaskForm('classifyId', item.id);
+
+    const initTagIcon = () => {
+        if (!props.isEdit) {
+            matterActions.setTaskForm('importance', currentTag.importance.id);
+            matterActions.setTaskForm('classifyId', currentTag.tag.id);
+        } else {
+            const tag = props.tags.find((item) => item.id === taskForm.classifyId) || tags[0];
+            setCurrentTag({
+                ...currentTag,
+                tag: { ...tag }
+            });
+            const importance = IMPORTANCE[taskForm.importance - 1] || IMPORTANCE[0];
+            setCurrentTag({
+                ...currentTag,
+                importance: { ...importance }
+            })
+        }
     }
+
+    useLayoutEffect(() => {
+        initTagIcon();
+    }, [])
 
     const renderImportance = () => (
         <ul className="importance">
@@ -49,7 +67,7 @@ const FormHeaderBase: React.FC<Props> = (props) => {
                         <span className="title">
                             {item.title}
                         </span>
-                        <div className="current" style={{ display: taskForm.importance.id === item.id ? 'block' : 'none' }}>
+                        <div className="current" style={{ display: taskForm.importance === item.id ? 'block' : 'none' }}>
                             <SvgIcon name="checked" width="14px" height="14px" />
                         </div>
                     </li>
@@ -81,6 +99,9 @@ const FormHeaderBase: React.FC<Props> = (props) => {
 
     return (
         <div className="formHeader">
+            <div className="icon">
+                <SvgIcon name="finish" width="28px" height="28px" />
+            </div>
             <div className="titleWrap">
                 <Input
                     placeholder="把事情记录下来"
@@ -95,9 +116,9 @@ const FormHeaderBase: React.FC<Props> = (props) => {
                 placement='bottomLeft'
                 content={importance}
                 circle
-                icon={taskForm.importance.icon}
+                icon={currentTag.importance.icon}
                 iconWrapStyle={{
-                    backgroundColor: taskForm.importance.bg
+                    backgroundColor: currentTag.importance.bg
                 }}
             />
             <Selector

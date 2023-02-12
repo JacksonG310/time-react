@@ -8,7 +8,7 @@ interface Props {
     color: string;
     icon?: string;
     name: string;
-    id: number;
+    id?: number;
 }
 
 type Method_Map = {
@@ -49,7 +49,7 @@ const ListCardHeader: React.FC<Props> = (props) => {
         const value = e.target.value;
         if (!value.trim()) return;
         const body = {
-            tagId: id,
+            tagId: id!,
             title: value
         }
         await matterActions.updateTagTitle(body);

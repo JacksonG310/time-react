@@ -1,4 +1,5 @@
 import React, { MutableRefObject, ReactNode, RefObject } from "react";
+import { VirtualList } from "..";
 import "./index.less";
 
 interface ListCardProps {
@@ -9,8 +10,8 @@ interface ListCardProps {
 }
 
 const ListCard: React.FC<ListCardProps> = React.forwardRef((props, ref: any) => {
-    const { header, content, footer } = props;
 
+    const { header, content } = props;
     return (
         <div className="listCard" ref={ref}>
             <div className="listCardWrap">

@@ -10,12 +10,14 @@ interface StateProps {
     taskForm: TaskForm;
 }
 
-interface Props extends StateProps { }
+interface Props extends StateProps {
+    isEdit: boolean;
+}
 
 const FormMoreBase: React.FC<Props> = (props) => {
-    const { taskForm } = props;
-
+    const { taskForm, isEdit } = props;
     const handleMarkChange = (e: ChangeEvent<HTMLTextAreaElement>) => matterActions.setTaskForm('remark', e.target.value);
+
     return (
         <div className="formMore">
             {/* <SubTask /> */}
@@ -28,14 +30,18 @@ const FormMoreBase: React.FC<Props> = (props) => {
                     autoSize={{ minRows: 2, maxRows: 6 }}
                     onChange={handleMarkChange} />
             </div>
-            <div className="fail-row">
-                <div className="fail-btn">
-                    <div className="fail-icon">
-                        <SvgIcon width="20px" height="20px" name="fail" />
+            {
+                isEdit ? (
+                    <div className="fail-row">
+                        <div className="fail-btn">
+                            <div className="fail-icon">
+                                <SvgIcon width="20px" height="20px" name="fail" />
+                            </div>
+                            <span>失败</span>
+                        </div>
                     </div>
-                    <span>失败</span>
-                </div>
-            </div>
+                ) : <></>
+            }
         </div>
     )
 }

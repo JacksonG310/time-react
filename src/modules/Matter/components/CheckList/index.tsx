@@ -1,4 +1,4 @@
-import { AddTagBody$POST, TagItem } from "@/api/types";
+import { AddTagBody$POST, TagItem, TaskItem } from "@/api/types";
 import { Scroll, SvgIcon, VirtualList } from "@/components";
 import AddClassifyForm from "@/components/addClassifyForm";
 import ListCard from "@/components/ListCard";
@@ -12,25 +12,15 @@ import "./index.less";
 
 interface StateProps {
     tags: Array<TagItem>;
+    tasks: Array<TaskItem>;
     userId: number;
 }
 interface Props extends StateProps { };
 
-const useData = () => {
-    const arr = [];
-    for (let i = 1; i <= 100; i++) {
-        arr.push({
-            finish: i % 2 == 0,
-            content: i + '',
-            more: i % 2 == 1
-        });
-    }
-    return arr;
-}
-
-
 const CheckListBase: React.FC<Props> = (props) => {
-    const { tags, userId } = props;
+    console.log("渲染");
+
+    const { tags, userId, tasks } = props;
     const contentStyle: CSSProperties = { paddingBottom: '20px', borderRadius: '12px' };
     const barStyle: CSSProperties = {
         width: "200px",
@@ -46,7 +36,6 @@ const CheckListBase: React.FC<Props> = (props) => {
         backgroundColor: '#d7d7d9'
     }
     const [isFormShow, setIsFormShow] = useState(false);
-
     const handleCancel = () => setIsFormShow(false);
     const handleBuild = async (title: string, iconId: string, color: string) => {
         const tagId = getRandom(4, 10000);
@@ -62,12 +51,13 @@ const CheckListBase: React.FC<Props> = (props) => {
         setIsFormShow(false);
     }
 
+    const getData = async () => await matterActions.getAllTagsAndTasks()
+
     useEffect(() => {
-        matterActions.getAllTags();
-        matterActions.getAllTasks();
+        getData();
     }, []);
     return (
-        <div className="checklist">
+        <div className="checklist" >
             <Scroll
                 width="100%"
                 height="100%"
@@ -80,12 +70,16 @@ const CheckListBase: React.FC<Props> = (props) => {
                 hBarItemStyle={barItemStyle}
 
             >
+                <ListCard
+                    header={<ListCardHeader name="全部" color="#007bed" />}
+                    content={<VirtualList data={tasks} itemHegiht={51} />}
+                />
                 {
                     tags.map((item) => {
                         return (
                             <ListCard
                                 header={<ListCardHeader name={item.name} color={item.color} id={item.id} />}
-                                content={<VirtualList data={useData()} itemHegiht={51} />}
+                                content={<VirtualList data={item.task} itemHegiht={51} />}
                                 key={item.id} />
                         )
                     })
@@ -113,6 +107,7 @@ function mapStateToProps(state: RootState) {
     return {
         tags: state.root.matterModule.tags,
         userId: state.root.mainModule.userInfo!.userId,
+        tasks: state.root.matterModule.tasks
     }
 }
 

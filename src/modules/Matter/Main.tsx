@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./index.less";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import MatterHeader from "@/components/Header";
 import { Switch } from "antd";
 import AddBtn from "@/components/addBtn";
@@ -18,7 +18,10 @@ const HideCom = (
 )
 
 interface StateProps {
-    addFormVisible: boolean
+    addFormVisible: {
+        visitable: boolean;
+        isEdit: boolean;
+    }
 }
 
 interface Props extends StateProps { };
@@ -26,11 +29,9 @@ interface Props extends StateProps { };
 const IssueBase: React.FC<Props> = (props) => {
     const [matterTitle] = useTitle();
     const { addFormVisible } = props;
-    const handleClick = () => matterActions.changleAddFormVisible(!addFormVisible);
+    const handleClick = () => matterActions.changleAddFormVisible(!addFormVisible.visitable);
 
-    useEffect(() => {
-        matterActions.findTask();
-    }, [])
+
     return (
         <div className="matter-view">
             <div className="matter-header">
@@ -39,7 +40,7 @@ const IssueBase: React.FC<Props> = (props) => {
             <div className="matter-body">
                 <Outlet />
             </div>
-            <AddForm visiable={addFormVisible} />
+            <AddForm addFromVisiable={addFormVisible} />
             <AddBtn onClick={handleClick} />
         </div>
     )

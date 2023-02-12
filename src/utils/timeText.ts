@@ -1,12 +1,8 @@
 import dayjs from "dayjs";
 import { weeks } from "./timePickerUtil";
 
-export const computedTimeText = (time: {
-    from: Date | null;
-    to: Date | null;
-}) => {
+export const computedTimeText = (from: (Date | null), to: (Date | null)) => {
     let btnText = '';
-    const { from, to } = time;
     const fromDayJS = dayjs(from);
     const toDayJS = dayjs(to);
 
