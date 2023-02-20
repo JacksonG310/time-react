@@ -2,6 +2,7 @@ import { AddTagBody$POST, TagItem, TaskItem } from "@/api/types";
 import { Scroll, SvgIcon, VirtualList } from "@/components";
 import AddClassifyForm from "@/components/addClassifyForm";
 import ListCard from "@/components/ListCard";
+import { ALL_CARD } from "@/constants/constants";
 import { RootState } from "@/types";
 import { getRandom } from "@/utils/getRamdon";
 import React, { CSSProperties, useEffect, useState } from "react";
@@ -18,8 +19,6 @@ interface StateProps {
 interface Props extends StateProps { };
 
 const CheckListBase: React.FC<Props> = (props) => {
-    console.log("渲染");
-
     const { tags, userId, tasks } = props;
     const contentStyle: CSSProperties = { paddingBottom: '20px', borderRadius: '12px' };
     const barStyle: CSSProperties = {
@@ -51,7 +50,10 @@ const CheckListBase: React.FC<Props> = (props) => {
         setIsFormShow(false);
     }
 
-    const getData = async () => await matterActions.getAllTagsAndTasks()
+    const getData = async () => {
+        await matterActions.getAllTags();
+        await matterActions.getAllTasks();
+    }
 
     useEffect(() => {
         getData();
@@ -71,15 +73,21 @@ const CheckListBase: React.FC<Props> = (props) => {
 
             >
                 <ListCard
-                    header={<ListCardHeader name="全部" color="#007bed" />}
-                    content={<VirtualList data={tasks} itemHegiht={51} />}
+                    header={<ListCardHeader
+                        name={ALL_CARD.name}
+                        color={ALL_CARD.color}
+                        icon={ALL_CARD.iconUrl}
+                        configurable={false}
+                    />}
+                    content={<VirtualList data={tasks} itemHegiht={51} name={ALL_CARD.name} />}
                 />
                 {
                     tags.map((item) => {
+                        const tasks = props.tasks.filter(task => task.classifyId === item.id);
                         return (
                             <ListCard
-                                header={<ListCardHeader name={item.name} color={item.color} id={item.id} />}
-                                content={<VirtualList data={item.task} itemHegiht={51} />}
+                                header={<ListCardHeader name={item.name} color={item.color} id={item.id} icon={item.iconUrl} />}
+                                content={<VirtualList data={tasks} itemHegiht={51} name={item.name} />}
                                 key={item.id} />
                         )
                     })

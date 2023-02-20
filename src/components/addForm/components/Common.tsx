@@ -2,15 +2,20 @@ import { SvgIcon } from "@/components";
 import { TimerPicker } from "@/components/TImerPicker";
 import { matterActions, TaskForm } from "@/modules/Matter";
 import { RootState } from "@/types";
-import { computedTimeText } from "@/utils/timeText";
+import { computedLastTimeText, computedTimeRangeText, computedTimeText } from "@/utils/timeText";
 import { Popover } from "antd";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 interface StateProps {
     taskForm: TaskForm
 }
-interface Props extends StateProps { };
+interface Props extends StateProps {
+    isEdit: boolean;
+};
 const FormCommonBase: React.FC<Props> = (props) => {
+    const { taskForm } = props;
+    const { startTime, endTime, finishStatus, status, finishTime } = taskForm;
+
     const [isPickerOpen, setIsPickerOpen] = useState(false);
     const handleCancel = () => setIsPickerOpen(false);
 
@@ -27,6 +32,7 @@ const FormCommonBase: React.FC<Props> = (props) => {
         matterActions.setTaskForm('endTime', time.to);
         setIsPickerOpen(false);
     }
+
     return (
         <div className="formCommon">
             <div className="formCommonWrap">
@@ -34,21 +40,56 @@ const FormCommonBase: React.FC<Props> = (props) => {
                     <div className="clock-icon">
                         <SvgIcon name="clock" width="16px" height="16px" />
                     </div>
-                    <div className="addTime">
-                        <Popover
-                            content={<TimerPicker onCancel={handleCancel} onSave={handleSave} />}
-                            trigger="click"
-                            placement="bottomLeft"
-                            open={isPickerOpen}
-                            onOpenChange={(open) => setIsPickerOpen(open)}
-                        >
-                            {
-                                props.taskForm.startTime == null && props.taskForm.endTime == null ? ('设置时间') :
-                                    computedTimeText(props.taskForm.startTime, props.taskForm.endTime)
-                            }
-                        </Popover>
-                    </div>
+                    {
+                        !(status == 1 && finishStatus) ? (
+                            <div className="addTime">
+                                <Popover
+                                    content={<TimerPicker onCancel={handleCancel} onSave={handleSave} />}
+                                    trigger="click"
+                                    placement="bottomLeft"
+                                    open={isPickerOpen}
+                                    onOpenChange={(open) => setIsPickerOpen(open)}
+                                >
+                                    {
+                                        startTime == null && endTime == null ? ('设置时间') :
+                                            computedTimeRangeText(startTime, endTime)
+                                    }
+                                </Popover>
+                            </div>
+                        ) : (
+                            <div className="startTime">
+                                <div className="label">开始时间</div>
+                                <div className="time">
+                                    {computedTimeText(startTime!)}
+                                </div>
+                            </div>
+                        )
+                    }
                 </div>
+                {
+                    status == 1 && finishStatus ? (
+                        <div className="result-row">
+                            <div className="finishTime">
+                                <div className="icon">
+                                    <SvgIcon name="finish-checked" width="16px" height="16px" />
+                                </div>
+                                <div className="label">结束时间</div>
+                                <div className="time">
+                                    {computedTimeText(finishTime!)}
+                                </div>
+                            </div>
+                            <div className="payTime">
+                                <div className="icon">
+                                    <SvgIcon name="like" width="16px" height="16px" />
+                                </div>
+                                <div className="label">花费时间</div>
+                                <div className="time">
+                                    {computedLastTimeText(startTime, finishTime)}
+                                </div>
+                            </div>
+                        </div>
+                    ) : <></>
+                }
             </div>
         </div >
     )

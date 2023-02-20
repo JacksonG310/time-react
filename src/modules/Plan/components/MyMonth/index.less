@@ -1,0 +1,64 @@
+.myMonth-page{
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    .left-arrow,.right-arrow{
+        position: absolute;
+        top: 50%;
+        width: 30px;
+        height: 30px;
+        background: #ececec;
+        border-radius: 50%;
+        opacity: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity .3s ease-in-out;
+    }
+    .left-arrow{
+        left:  10px;
+    }
+    .right-arrow{
+        right: 10px;
+    }
+    &:hover{
+        .left-arrow
+        ,.right-arrow{
+            opacity: 1;
+            
+        }
+    }
+}
+
+.task-cell{
+    width: 100%;
+    border-radius: 2px;
+    overflow: hidden;
+    font-size: 12px;
+    
+    .task-cell-wrap{
+        display: flex;
+        padding: 0 5px 0 4px;
+        margin-top: 1px;
+        flex-flow: row wrap;
+        height: 20px;
+        justify-content: space-between;
+        box-shadow: 0 4px 16px 0 rgba(38, 130, 216, .1);
+        align-items: center;
+        cursor: pointer;
+        color: #fff;
+        transition: opacity .6s;
+        .title{
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        &:hover{
+            opacity: .6;
+        }
+    }
+}
+.finished{
+    opacity: .6;
+}

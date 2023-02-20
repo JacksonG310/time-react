@@ -1,30 +1,39 @@
-import { Scroll, SvgIcon } from "@/components";
-import { ICON_NAME } from "@/constants/icon";
-import { computedIconLayout } from "@/utils/computedIconLayout";
-import { Button, Carousel, Popover } from "antd";
+import { Badge, BadgeProps, Button, Calendar, Carousel, Popover } from "antd";
 import "./index.less";
-import React, { ReactNode, useState } from "react";
-import { TimerPicker } from "@/components/TImerPicker";
+import React, { ReactNode, useEffect, useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
+import { connect } from "react-redux";
+import { RootState } from "@/types";
+import { TaskItem } from "@/api/types";
+import { dateFormat } from "@/utils/timePickerUtil";
+import { matterActions } from "../Matter";
+import { PlanCalendar } from "@/components/base/PlanCalendar";
+import { getCurrentMonthDays } from "@/utils/calendarUtil";
 
-const Test = () => {
-    const [open, setOpen] = useState(false);
+interface StateProps {
+    tasks: TaskItem[];
+}
 
-    const hide = () => {
-        setOpen(false);
-    };
+interface Props extends StateProps {
 
-    const handleOpenChange = (newOpen: boolean) => {
-        setOpen(newOpen);
-    };
+}
+
+const TestBase: React.FC<Props> = (props) => {
+    const res = getCurrentMonthDays(dayjs());
+    console.log(res);
 
     return (
-        <div className="test" style={{ width: '304px', height: '228px', }}>
-            <Popover trigger="click">
-                <Button>Click Me</Button>
-            </Popover>
-        </div>
-    );
+        <PlanCalendar />
+    )
 };
 
+function mapStateToProps(state: RootState) {
+    return {
+        tasks: state.root.matterModule.tasks
+    }
+
+}
+
+const Test = connect(mapStateToProps)(TestBase);
 
 export default Test;

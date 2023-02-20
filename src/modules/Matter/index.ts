@@ -1,9 +1,8 @@
-import { addTask, findTaskById, findTasks, updateStatus } from "@/api/task";
+import { addTask, findTaskById, findTasks, updateStatus, updateTask } from "@/api/task";
 import { addTag, findTags, updateTagTitle } from "@/api/todoClassify";
-import { AddTagBody$POST, AddTaskBody$POST, TagItem, TaskItem, UpdateStatusBody$POST, UpdateTagTitle$PUT } from "@/api/types";
-import { IMPORTANCE, ImportanceItem } from "@/constants/constants";
+import { AddTagBody$POST, AddTaskBody$POST, TagItem, TaskItem, UpdateStatusBody$POST, UpdateTagTitle$PUT, UpdateTaskBody$PUT } from "@/api/types";
 import { RootState } from "@/types";
-import { nestTask } from "@/utils/nestTask";
+import { message } from "antd";
 import { Module, register } from "redux-assist";
 import Issue from "./Main";
 
@@ -44,7 +43,7 @@ const initState: MatterState = {
         id: -1,
         classifyId: -1,
         status: -1,
-        importance: -1,
+        importance: 1,
         created: null,
         updated: null,
         remark: '',
@@ -52,7 +51,7 @@ const initState: MatterState = {
         endTime: null,
         startTime: null,
         finishTime: null,
-        finishStatus: -1,
+        finishStatus: 0,
         title: ''
     },
 }
@@ -70,27 +69,30 @@ class MatterModule extends Module<MatterState, RootState>{
     async getAllTags() {
         const { userId, token } = this.rootState.root.mainModule.userInfo!;
         const res = await findTags(userId, token);
+        this.setState({
+            tags: [
+                ...res.tags
+            ],
+        });
         return res;
     }
     async getAllTasks() {
         const { userId, token } = this.rootState.root.mainModule.userInfo!;
         const res = await findTasks(userId, token);
+        this.setState({
+            tasks: [
+                ...res
+            ]
+        })
         return res;
 
     }
-    async getAllTagsAndTasks() {
-        const tagsArr = await this.getAllTags();
-        const tasksArr = await this.getAllTasks();
-        nestTask(tagsArr.tags, tasksArr);
-        this.setState({
-            tags: [
-                ...tagsArr.tags
-            ],
-            tasks: [
-                ...tasksArr
-            ]
-        });
-    }
+    // async getAllTagsAndTasks() {
+    //     const tagsArr = await this.getAllTags();
+    //     const tasksArr = await this.getAllTasks();
+    //     nestTask(tagsArr.tags, tasksArr);
+
+    // }
     async addTag(body: AddTagBody$POST) {
         const { token } = this.rootState.root.mainModule.userInfo!;
         await addTag(body, token);
@@ -101,8 +103,10 @@ class MatterModule extends Module<MatterState, RootState>{
     }
     async addTask(body: AddTaskBody$POST) {
         const { token } = this.rootState.root.mainModule.userInfo!;
+        console.log(body);
+
         await addTask(body);
-        this.getAllTagsAndTasks();
+        this.getAllTasks();
         this.changleAddFormVisible(false);
         this.resetTaskForm();
     }
@@ -113,21 +117,33 @@ class MatterModule extends Module<MatterState, RootState>{
             userId,
         }
         await updateStatus(data);
-        this.getAllTagsAndTasks();
     }
-    async getTaskById() {
+    async getTaskById(taskId: number) {
         const { visitable, isEdit } = this.state.addFormVisible;
         if (!visitable && !isEdit) return;
         const { userId } = this.rootState.root.mainModule.userInfo!;
-        const { id: taskId } = this.state.taskForm;
         const res = await findTaskById(userId, taskId);
         this.setState({
             taskForm: { ...res }
         })
     }
+    async updateTask(body: Omit<UpdateTaskBody$PUT, "userId">) {
+        try {
+            const { userId } = this.rootState.root.mainModule.userInfo!;
+            const data = {
+                ...body,
+                userId,
+            }
+            await updateTask(data);
+            message.success("修改成功");
+        } catch (error) {
+            throw error;
+        }
+    }
     resetTaskForm() {
+        const tagId = this.state.tags[0].id;
         this.setState({
-            taskForm: { ...initState.taskForm }
+            taskForm: { ...initState.taskForm, classifyId: tagId }
         });
     }
     setTaskForm(key: (keyof TaskForm), value: any) {

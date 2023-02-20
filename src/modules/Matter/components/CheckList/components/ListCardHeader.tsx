@@ -9,6 +9,8 @@ interface Props {
     icon?: string;
     name: string;
     id?: number;
+    configurable?: boolean;
+
 }
 
 type Method_Map = {
@@ -29,7 +31,7 @@ const renderMoreContent = (methods: Method_Map) => (
 )
 
 const ListCardHeader: React.FC<Props> = (props) => {
-    const { color, name, icon, id } = props;
+    const { color, name, id, icon, configurable = true } = props;
     const [open, setOpen] = useState(false);
     const handleOpenChange = (newOpen: boolean) => setOpen(newOpen);
 
@@ -63,7 +65,12 @@ const ListCardHeader: React.FC<Props> = (props) => {
         <div className="classifyTitle">
             {
                 !isEdit ? (
-                    <span className="tagName" style={{ color: `${color}` }}>{title}</span>
+                    <div className="classifyWrap">
+                        <div className="tagIcon" style={{ background: `${color}` }}>
+                            <img src={icon} alt="" />
+                        </div>
+                        <span className="tagName" style={{ color: `${color}` }}>{title}</span>
+                    </div>
                 ) : (
                     <Input
                         defaultValue={title}
@@ -75,17 +82,21 @@ const ListCardHeader: React.FC<Props> = (props) => {
                 )
 
             }
-            <Popover
-                content={content}
-                trigger="click"
-                placement="bottomRight"
-                open={open}
-                onOpenChange={handleOpenChange}
-            >
-                <span className="more-icon">
-                    <SvgIcon name="more" height="18px" width="18px" />
-                </span>
-            </Popover>
+            {
+                configurable ? (
+                    <Popover
+                        content={content}
+                        trigger="click"
+                        placement="bottomRight"
+                        open={open}
+                        onOpenChange={handleOpenChange}
+                    >
+                        <span className="more-icon">
+                            <SvgIcon name="more" height="18px" width="18px" />
+                        </span>
+                    </Popover>
+                ) : <></>
+            }
         </div>
     )
 

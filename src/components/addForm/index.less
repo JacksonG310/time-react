@@ -21,8 +21,8 @@
     }
     .icon{
         .circle{
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             border: 1px solid #42a2f4;
         }
@@ -61,6 +61,37 @@
                 &:hover{
                     background: #f5f9ff;
                 }
+            }
+            .startTime{
+                .label{
+                    padding: 8px;
+                }
+                .time{
+                    color: #ff9600;
+                }
+                display: flex;
+                align-items: center;
+            }
+        }
+        .result-row{
+            .finishTime,
+            .payTime{
+                align-items: center;
+                display: flex;
+                font-size: 14px;
+            }
+            .finishTime .icon,
+            .payTime .icon{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .finishTime .label,
+            .payTime .label{
+                padding: 8px;
+            }
+            .payTime .time{
+                color: #3b8cf1;
             }
         }
     }

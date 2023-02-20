@@ -5,7 +5,8 @@ import { IMPORTANCE, ImportanceItem } from "@/constants/constants";
 import { matterActions, TaskForm } from "@/modules/Matter";
 import { RootState } from "@/types";
 import { Input } from "antd";
-import React, { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
+import dayjs from "dayjs";
+import React, { ChangeEvent, MouseEvent, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 
 interface StateProps {
@@ -21,35 +22,39 @@ interface Props extends StateProps {
 const FormHeaderBase: React.FC<Props> = (props) => {
 
     const { tags, taskForm } = props;
-    const [currentTag, setCurrentTag] = useState({
-        importance: IMPORTANCE[0],
-        tag: tags[0]
-    })
+
     const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => matterActions.setTaskForm('title', e.target.value);
     const handleImportanceClick = (item: ImportanceItem) => matterActions.setTaskForm('importance', item.id);
     const handleTagClick = (item: TagItem) => matterActions.setTaskForm('classifyId', item.id);
 
-    const initTagIcon = () => {
-        if (!props.isEdit) {
-            matterActions.setTaskForm('importance', currentTag.importance.id);
-            matterActions.setTaskForm('classifyId', currentTag.tag.id);
-        } else {
-            const tag = props.tags.find((item) => item.id === taskForm.classifyId) || tags[0];
-            setCurrentTag({
-                ...currentTag,
-                tag: { ...tag }
-            });
-            const importance = IMPORTANCE[taskForm.importance - 1] || IMPORTANCE[0];
-            setCurrentTag({
-                ...currentTag,
-                importance: { ...importance }
-            })
+    const handleFinishClick = async (e: MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
+        const { id, finishStatus, finishTime, status } = taskForm;
+        const body = {
+            taskId: id,
+            finishTime: finishTime ? null : dayjs().toDate(),
+            finishStatus: finishStatus ? 0 : 1,
+            status: status === 0 ? 1 : 0,
+            updated: dayjs().toDate()
         }
+        await matterActions.updateTaskStatus(body);
+        await matterActions.getAllTasks();
     }
+    const { importanceIcon, tagIcon } = useMemo(() => {
 
-    useLayoutEffect(() => {
-        initTagIcon();
-    }, [])
+        const renderImportanceIcon = () => IMPORTANCE[taskForm.importance - 1] || IMPORTANCE[0];
+        const renderTagIcon = () => tags.find((item) => item.id === taskForm.classifyId) || tags[0];
+
+        const importanceIcon = renderImportanceIcon();
+        const tagIcon = renderTagIcon();
+
+        return { importanceIcon, tagIcon }
+
+    }, [taskForm.classifyId, taskForm.importance])
+
+    useEffect(() => {
+        matterActions.resetTaskForm();
+    }, []);
 
     const renderImportance = () => (
         <ul className="importance">
@@ -86,7 +91,7 @@ const FormHeaderBase: React.FC<Props> = (props) => {
                         <div className="title">
                             {item.name}
                         </div>
-                        <span className="checked" style={{ display: item.id === currentTag.tag.id ? 'block' : 'none' }}>
+                        <span className="checked" style={{ display: item.id === taskForm.classifyId ? 'block' : 'none' }}>
                             <SvgIcon name="tagChecked" width="20px" height="20px" />
                         </span>
                     </li>
@@ -99,9 +104,23 @@ const FormHeaderBase: React.FC<Props> = (props) => {
 
     return (
         <div className="formHeader">
-            <div className="icon">
-                <SvgIcon name="finish" width="28px" height="28px" />
-            </div>
+            {
+                props.isEdit ? (
+                    <div className="icon" onClick={handleFinishClick}>
+                        {
+                            taskForm.status === 0 ? (
+                                <div className="circle"></div>
+                            ) : (
+                                taskForm.finishStatus == 1 ? (
+                                    <SvgIcon name="finish" width="28px" height="28px" />
+                                ) : (
+                                    <SvgIcon name="fail" width="28px" height="28px" />
+                                )
+                            )
+                        }
+                    </div>
+                ) : <></>
+            }
             <div className="titleWrap">
                 <Input
                     placeholder="把事情记录下来"
@@ -116,9 +135,9 @@ const FormHeaderBase: React.FC<Props> = (props) => {
                 placement='bottomLeft'
                 content={importance}
                 circle
-                icon={currentTag.importance.icon}
+                icon={importanceIcon.icon}
                 iconWrapStyle={{
-                    backgroundColor: currentTag.importance.bg
+                    backgroundColor: importanceIcon.bg
                 }}
             />
             <Selector
@@ -128,9 +147,9 @@ const FormHeaderBase: React.FC<Props> = (props) => {
                 content={classify}
                 circle
                 iconType="png"
-                icon={currentTag.tag!.iconUrl}
+                icon={tagIcon.iconUrl}
                 iconWrapStyle={{
-                    backgroundColor: currentTag.tag!.color
+                    backgroundColor: tagIcon.color
                 }}
             />
         </div>

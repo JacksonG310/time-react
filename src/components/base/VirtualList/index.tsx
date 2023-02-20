@@ -6,6 +6,7 @@ import "./index.less";
 interface VirtualListProps {
     data: Array<TaskItem>;
     itemHegiht: number;
+    name: string;
 }
 
 const VirtualList = (props: VirtualListProps) => {
@@ -63,13 +64,15 @@ const VirtualList = (props: VirtualListProps) => {
     return (
         <div className="virtualList" ref={listRef} onScroll={onListScroll}>
             <div className="listWrap">
-                <div className="addItem">
-                    <div className="addWrap">
-                        <div>
-                            添加新事项
+                {!(props.name === '全部') ? (
+                    <div className="addItem">
+                        <div className="addWrap">
+                            <div>
+                                添加新事项
+                            </div>
                         </div>
                     </div>
-                </div>
+                ) : <></>}
                 <div className="visitableWrap" style={{ ...paddingStyle }}>
                     {
                         dispalyData.length > 0 && dispalyData.map((item, index) => {

@@ -29,7 +29,9 @@ interface Props extends StateProps { };
 const IssueBase: React.FC<Props> = (props) => {
     const [matterTitle] = useTitle();
     const { addFormVisible } = props;
-    const handleClick = () => matterActions.changleAddFormVisible(!addFormVisible.visitable);
+    const handleClick = () => {
+        matterActions.changleAddFormVisible(!addFormVisible.visitable);
+    }
 
 
     return (

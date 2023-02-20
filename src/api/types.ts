@@ -76,6 +76,7 @@ export interface AddTaskBody$POST {
     creator: number;
     from: Date;
     to: Date;
+    finishStatus: number;
 }
 
 export type FindTaskResponse$GET = Array<TaskItem>;
@@ -103,4 +104,16 @@ export interface UpdateStatusBody$POST {
     status: number;
     userId: number;
     taskId: number;
+}
+
+export interface UpdateTaskBody$PUT {
+    taskId: number;
+    userId: number;
+    classifyId: number;
+    importance: number;
+    updated: Date;
+    remark: string;
+    title: string;
+    startTime: Date;
+    endTime: Date;
 }

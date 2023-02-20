@@ -1,0 +1,27 @@
+.date-cell{
+    display: inline-block;
+    min-height: 135px;
+    max-height: 135px;
+    width: (100% / 7);
+    border-top: 1px solid #f9f9fb;
+    border-left: 1px solid #f9f9fb;
+    overflow: hidden;
+    .date-cell-wrap{
+        padding-left: 8px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 5px;
+        .cell-header{
+            display: flex;
+            align-items: center;
+            height: 33px;
+            padding-left: 9px;
+        }
+        .cell-body{
+            flex: 1;
+            overflow: hidden;
+            padding-right: 4px;
+        }
+    }
+}

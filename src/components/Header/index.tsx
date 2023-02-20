@@ -7,7 +7,7 @@ interface MatterHeaderProps {
     right?: ReactNode;
 }
 
-const MatterHeader: React.FC<MatterHeaderProps> = (props) => {
+const Header: React.FC<MatterHeaderProps> = (props) => {
     const { left, center, right } = props;
     return (
         <div className="header">
@@ -18,4 +18,4 @@ const MatterHeader: React.FC<MatterHeaderProps> = (props) => {
     )
 }
 
-export default MatterHeader;
+export default Header;

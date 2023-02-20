@@ -31,6 +31,7 @@ export const generateMinutes = (start?: number, end?: number) => {
 export const timeFormat = "HH:mm";
 export const dateFormat = "YYYY-MM-DD";
 export const dateTimeFormat = "YYYY-MM-DD HH:mm";
+export const yearMonthFormat = "YYYY/MM";
 
 export const weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 

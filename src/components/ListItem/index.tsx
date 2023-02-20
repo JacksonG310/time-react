@@ -1,7 +1,8 @@
-import { TaskItem, UpdateStatusBody$POST } from "@/api/types";
+import { TaskItem } from "@/api/types";
 import { matterActions } from "@/modules/Matter";
+import { computedLatestTime, isDelay } from "@/utils/timeText";
 import dayjs from "dayjs";
-import React, { MouseEvent, useState } from "react";
+import React, { MouseEvent } from "react";
 import { SvgIcon } from "..";
 import "./index.less";
 interface ListItemProps {
@@ -9,7 +10,7 @@ interface ListItemProps {
 }
 
 const ListItem: React.FC<ListItemProps> = (props) => {
-    const { status, title, id, finishStatus, finishTime } = props.item;
+    const { status, title, id, finishStatus, finishTime, endTime } = props.item;
     const changeStatus = async (e: MouseEvent<HTMLDivElement>) => {
         e.stopPropagation();
         const body = {
@@ -20,14 +21,16 @@ const ListItem: React.FC<ListItemProps> = (props) => {
             updated: dayjs().toDate()
         }
         await matterActions.updateTaskStatus(body);
+        await matterActions.getAllTasks();
+
     }
-    const getTaskById = async () => {
-        await matterActions.getTaskById();
+    const getTaskById = async (taskId: number) => {
+        await matterActions.getTaskById(taskId);
     }
     const goToEdit = async (item: TaskItem) => {
         matterActions.changleAddFormVisible(true, true);
         matterActions.setTaskForm('id', item.id);
-        await getTaskById();
+        await getTaskById(item.id);
     }
     return (
         <div className="listItem" onClick={() => goToEdit(props.item)}>
@@ -35,14 +38,23 @@ const ListItem: React.FC<ListItemProps> = (props) => {
                 <div className="itemParent">
                     <div className="finish" onClick={changeStatus}>
                         {
-                            (status === 0) ?
-                                <div className="circle"></div> :
-                                <div>
+                            status === 0 ? (
+                                <div className="circle"></div>
+                            ) : (
+                                finishStatus == 1 ? (
                                     <SvgIcon name="finish" width="16px" height="16px" />
-                                </div>
+                                ) : (
+                                    <SvgIcon name="fail" width="16px" height="16px" />
+                                )
+                            )
                         }
                     </div>
-                    <div className="content">{title}</div>
+                    <div className="content">
+                        <div className="title">{title}</div>
+                        <div className="info" style={{ color: isDelay(endTime, !!status) ? '#ff9461' : '#bdc0c7' }}>
+                            {computedLatestTime(endTime, !!status)}
+                        </div>
+                    </div>
                     {/* <div className="more" style={{ "display": isHover && more ? 'block' : 'none' }}>更多</div> */}
                 </div>
                 <div className="itemMore"></div>

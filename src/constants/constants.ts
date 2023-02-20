@@ -1,7 +1,7 @@
 export const TITLE_MAP = {
     'matter': '事项',
     'allMatter': '列表',
-    'important': '四象限',
+    'importance': '四象限',
     'schedule': '日程',
     'checkList': '清单',
     'repeat': '重复',
@@ -108,4 +108,20 @@ export const IMPORTANCE: Array<ImportanceItem> = [
         bg: '#d1e8ff',
         id: 4
     }
+]
+
+export const ALL_CARD = {
+    name: "全部",
+    color: "#007bed",
+    iconUrl: "http://127.0.0.1:3000/images/all.png",
+}
+
+export const WEEK_MAP = [
+    '周日',
+    '周一',
+    '周二',
+    '周三',
+    '周四',
+    '周五',
+    '周六'
 ]

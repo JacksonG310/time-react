@@ -27,7 +27,6 @@ interface Props extends StateProps {
 
 const AddFormBase: React.FC<Props> = (props) => {
     const { taskForm, userInfo, addFromVisiable } = props;
-
     const validateTitle = (title: string) => {
         const res = new Validator(titleValidator.validator).addRules([{ value: title, rules: titleValidator.rules }]).validate();
         if (res.error[0]) message.error(res.error[0]);
@@ -55,12 +54,28 @@ const AddFormBase: React.FC<Props> = (props) => {
             creator: userInfo.userId,
             from: startTime!,
             to: endTime!,
-            title
+            title,
+            finishStatus: 0
         }
         await matterActions.addTask(body);
     }
-    const handleSave = () => {
-
+    const handleSave = async () => {
+        const { classifyId, importance, remark, title, startTime, endTime, id } = taskForm;
+        const res = validateTitle(title.trim()) && validateTime(startTime) && validateTime(endTime);
+        if (!res) return;
+        const body = {
+            taskId: id,
+            classifyId,
+            importance,
+            updated: new Date(),
+            remark,
+            title,
+            startTime: startTime!,
+            endTime: endTime!
+        }
+        await matterActions.updateTask(body);
+        await matterActions.getAllTasks();
+        matterActions.changleAddFormVisible(false);
     }
     const handleCancel = () => {
         matterActions.changleAddFormVisible(false);
@@ -73,7 +88,7 @@ const AddFormBase: React.FC<Props> = (props) => {
             type="primary"
             onClick={addFromVisiable.isEdit ? handleSave : handleBulid}>
             {addFromVisiable.isEdit ? "保存" : "创建"}
-        </Button>,
+        </Button>
     ]
     return (
         <Modal
@@ -87,7 +102,7 @@ const AddFormBase: React.FC<Props> = (props) => {
             <Scroll maxHeight="400px" maxWidth="100%" width="100%" height="100%" trigger="none">
                 <div className="addForm">
                     <FormHeader isEdit={addFromVisiable.isEdit} />
-                    <FormCommon />
+                    <FormCommon isEdit={addFromVisiable.isEdit} />
                     <FormMore isEdit={addFromVisiable.isEdit} />
                 </div>
             </Scroll>
